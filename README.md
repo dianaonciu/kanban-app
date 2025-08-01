@@ -3,18 +3,23 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 ## Getting Started
 
 Setup & Run Locally
+
 Prerequisites
+
 Node.js (v16 or later recommended)
 
 npm or yarn
 
 Installation
+
 Clone the repository:
 
 git clone https://github.com/dianaonciu/kanban-app
+
 cd kanban-app
 
 Install dependencies:
+
 npm install
 
 # or
@@ -22,10 +27,13 @@ npm install
 yarn install
 
 Running the app
+
 Start the development server:
+
 npm run dev
 
 # or
 
 yarn dev
+
 Open your browser and navigate to http://localhost:3000 to see the app.
