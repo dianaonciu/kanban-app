@@ -8,7 +8,7 @@ Prerequisites
 
 Node.js (v16 or later recommended)
 
-npm or yarn
+pnpm, npm or yarn
 
 Installation
 
@@ -20,20 +20,12 @@ cd kanban-app
 
 Install dependencies:
 
-npm install
-
-# or
-
-yarn install
+pnpm/npm install or yarn install
 
 Running the app
 
 Start the development server:
 
-npm run dev
-
-# or
-
-yarn dev
+pnpm/npm run dev or yarn dev
 
 Open your browser and navigate to http://localhost:3000 to see the app.
