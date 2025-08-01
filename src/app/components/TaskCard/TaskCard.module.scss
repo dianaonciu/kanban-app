@@ -1,0 +1,79 @@
+.taskCard {
+  padding: 1rem;
+  background-color: #121212;
+  border-radius: 8px;
+  margin-bottom: 0.75rem;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.8);
+  position: relative;
+  border: 1.5px solid white;
+  color: #eee;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.titleWrapper {
+  flex: 1;
+  min-width: 0;
+}
+
+.actions {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.taskTitle {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #eee;
+  word-wrap: break-word;
+  line-height: 1.2;
+  margin: 0;
+}
+
+.description {
+  font-size: 0.9rem;
+  color: #ccc;
+  white-space: pre-wrap;
+  margin-bottom: 0.5rem;
+}
+
+.empty {
+  font-style: italic;
+  color: #777;
+}
+
+.editButton,
+.deleteButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2rem;
+  padding: 0 0.3rem;
+  line-height: 1;
+
+  &.editButton {
+    color: #66aaff;
+    &:hover {
+      color: #99cfff;
+    }
+  }
+
+  &.deleteButton {
+    color: #ff6666;
+    &:hover {
+      color: #ff9999;
+    }
+  }
+}
+
+.commentsSection {
+  margin-top: 1rem;
+  border-top: 1px solid #444;
+  padding-top: 0.8rem;
+}

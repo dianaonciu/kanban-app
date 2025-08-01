@@ -1,0 +1,120 @@
+.empty {
+  font-style: italic;
+  color: #777;
+}
+
+.commentsList {
+  margin-top: 0.75rem;
+}
+
+.commentItem {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 0.5rem;
+}
+
+.commentDisplay {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.commentDisplay span {
+  flex: 1;
+  color: #eee;
+}
+
+.commentInputWrapper {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.commentInput {
+  width: 100%;
+  min-height: 60px;
+  border: 1.5px solid white;
+  border-radius: 6px;
+  padding: 0.6rem 0.8rem;
+  font-size: 1rem;
+  resize: vertical;
+  margin-bottom: 0.5rem;
+  color: #eee;
+  background-color: #121212;
+  box-shadow: 0 0 6px rgba(102, 170, 255, 0.25);
+  transition: border-color 0.3s ease;
+}
+
+.commentButtons {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.commentSaveButton {
+  background-color: #121212;
+  border: 1.5px solid white;
+  color: white;
+  padding: 0.45rem 1rem;
+  cursor: pointer;
+  font-weight: 700;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+
+  &:disabled {
+    background-color: #444;
+    border-color: #666;
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+
+  &:not(:disabled):hover {
+    background-color: #2a2a2a;
+    transform: scale(1.03);
+  }
+}
+
+.commentCancelButton {
+  background-color: transparent;
+  border: 1.5px solid #bbb;
+  color: #bbb;
+  padding: 0.45rem 1rem;
+  cursor: pointer;
+  font-weight: 700;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background-color: #333;
+    color: white;
+    border-color: white;
+    transform: scale(1.03);
+  }
+}
+
+.editButton,
+.deleteButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2rem;
+  padding: 0 0.3rem;
+  line-height: 1;
+
+  &.editButton {
+    color: #66aaff;
+    &:hover {
+      color: #99cfff;
+    }
+  }
+
+  &.deleteButton {
+    color: #ff6666;
+    &:hover {
+      color: #ff9999;
+    }
+  }
+}

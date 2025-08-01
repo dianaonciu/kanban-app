@@ -1,0 +1,35 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background-color: #494949;
+  border-bottom: 1px solid #ddd;
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: white;
+}
+
+.addButton {
+  margin-top: 12px;
+  padding: 8px 14px;
+  background-color: #121212;
+  border: 1.5px solid white;
+  color: white;
+  font-weight: 600;
+  font-size: 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.25s ease;
+
+  &:hover {
+    background-color: gray;
+  }
+
+  &:active {
+    background-color: rgb(81, 81, 81);
+  }
+}

@@ -1,0 +1,55 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 12px;
+  background: #121212;
+  border: 1.5px solid white;
+  border-radius: 8px;
+  padding: 12px;
+  color: #eee;
+
+  input[type='text'],
+  textarea {
+    border: 1.5px solid white;
+    border-radius: 6px;
+    padding: 8px 10px;
+    font-size: 1rem;
+    color: #eee;
+    background: #121212;
+    transition: border-color 0.2s ease;
+
+    &:focus {
+      outline: none;
+      border: 2.5px solid white;
+      box-shadow: 0 0 8px rgba(85, 153, 221, 0.3);
+    }
+  }
+
+  textarea {
+    resize: vertical;
+    min-height: 60px;
+    font-family: inherit;
+  }
+
+  button {
+    align-self: flex-end;
+    background-color: #121212;
+    border: 1.5px solid white;
+    color: white;
+    border-radius: 6px;
+    padding: 8px 18px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+
+    &:hover {
+      background-color: gray;
+    }
+
+    &:active {
+      background-color: rgb(81, 81, 81);
+    }
+  }
+}
