@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import styles from './Column.module.scss';
 import TaskCard from '../TaskCard/TaskCard';
 import { IColumn } from '../types';
@@ -16,29 +16,27 @@ const Column = ({ column }: ColumnProps) => {
   const { moveTask, renameColumn, deleteColumn, addTask } = useKanban();
 
   const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
   const [editingTitle, setEditingTitle] = useState(false);
   const [newTitle, setNewTitle] = useState(column.title);
   const [addingTask, setAddingTask] = useState(false);
-  const [draggedIndex, setDraggedIndex] = useState(0);
+  const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
   const [tasks, setTasks] = useState(column.tasks);
 
   useEffect(() => {
     setTasks(column.tasks);
   }, [column.tasks]);
 
-  const onDragStart = (e: React.DragEvent, index: React.SetStateAction<number>) => {
+  const onDragStart = (e: React.DragEvent, index: number) => {
     setDraggedIndex(index);
   };
 
   const handleDragOver = (e: React.DragEvent, index: number) => {
     e.preventDefault();
-
-    if (draggedIndex === index) return;
+    if (draggedIndex === null || draggedIndex === index) return;
 
     const newTasks = [...tasks];
-    const draggedTask = newTasks[draggedIndex];
-
-    newTasks.splice(draggedIndex, 1);
+    const [draggedTask] = newTasks.splice(draggedIndex, 1);
     newTasks.splice(index, 0, draggedTask);
 
     setDraggedIndex(index);
@@ -62,8 +60,11 @@ const Column = ({ column }: ColumnProps) => {
   };
 
   const handleDelete = () => {
-    deleteColumn(column.id);
-    setMenuOpen(false);
+    const confirmed = window.confirm('Are you sure you want to delete this column?');
+    if (confirmed) {
+      deleteColumn(column.id);
+      setMenuOpen(false);
+    }
   };
 
   const onAddTask = (title: string, description: string) => {
@@ -74,6 +75,21 @@ const Column = ({ column }: ColumnProps) => {
     });
     setAddingTask(false);
   };
+
+  useEffect(() => {
+    if (!menuOpen) return;
+
+    function handleClickOutside(event: MouseEvent) {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setMenuOpen(false);
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [menuOpen]);
 
   return (
     <div className={styles.column} onDrop={handleDrop} onDragOver={(e) => e.preventDefault()}>
@@ -90,8 +106,12 @@ const Column = ({ column }: ColumnProps) => {
         ) : (
           <h2 className={styles.title}>{column.title}</h2>
         )}
-        <div className={styles.menuWrapper}>
-          <button className={styles.menuButton} onClick={() => setMenuOpen((v) => !v)}>
+        <div className={styles.menuWrapper} ref={menuRef}>
+          <button
+            className={styles.menuButton}
+            onClick={() => setMenuOpen((v) => !v)}
+            aria-label="Column options"
+          >
             ⋮
           </button>
           {menuOpen && (
@@ -103,17 +123,16 @@ const Column = ({ column }: ColumnProps) => {
         </div>
       </div>
 
-      {tasks &&
-        tasks.length > 0 &&
-        tasks.map((task, index) => (
-          <div
-            key={task.id}
-            onDragStart={(e) => onDragStart(e, index)}
-            onDragOver={(e) => handleDragOver(e, index)}
-          >
-            <TaskCard task={task} columnId={column.id} />
-          </div>
-        ))}
+      {tasks.map((task, index) => (
+        <div
+          key={task.id}
+          draggable
+          onDragStart={(e) => onDragStart(e, index)}
+          onDragOver={(e) => handleDragOver(e, index)}
+        >
+          <TaskCard task={task} columnId={column.id} />
+        </div>
+      ))}
 
       <button className={styles.addTaskButton} onClick={() => setAddingTask((v) => !v)}>
         ＋ Add Task

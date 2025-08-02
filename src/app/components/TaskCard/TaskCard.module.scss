@@ -7,6 +7,12 @@
   position: relative;
   border: 1.5px solid white;
   color: #eee;
+  cursor: grab;
+  user-select: none;
+
+  @media (max-width: 480px) {
+    padding: 0.75rem;
+  }
 }
 
 .header {
@@ -34,6 +40,10 @@
   word-wrap: break-word;
   line-height: 1.2;
   margin: 0;
+
+  @media (max-width: 480px) {
+    font-size: 1rem;
+  }
 }
 
 .description {
@@ -41,6 +51,10 @@
   color: #ccc;
   white-space: pre-wrap;
   margin-bottom: 0.5rem;
+
+  @media (max-width: 480px) {
+    font-size: 0.85rem;
+  }
 }
 
 .empty {
@@ -56,9 +70,11 @@
   font-size: 1.2rem;
   padding: 0 0.3rem;
   line-height: 1;
+  user-select: none;
 
   &.editButton {
     color: #66aaff;
+
     &:hover {
       color: #99cfff;
     }
@@ -66,6 +82,7 @@
 
   &.deleteButton {
     color: #ff6666;
+
     &:hover {
       color: #ff9999;
     }

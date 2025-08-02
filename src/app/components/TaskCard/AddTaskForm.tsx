@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import styles from './AddTaskForm.module.scss';
 
 interface AddTaskFormProps {
@@ -16,11 +16,16 @@ const AddTaskForm = ({
 }: AddTaskFormProps) => {
   const [title, setTitle] = useState(initialTitle);
   const [description, setDescription] = useState(initialDescription);
+  const titleInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     setTitle(initialTitle);
     setDescription(initialDescription);
   }, [initialTitle, initialDescription]);
+
+  useEffect(() => {
+    titleInputRef.current?.focus();
+  }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -31,23 +36,27 @@ const AddTaskForm = ({
   };
 
   return (
-    <form className={styles.form} onSubmit={handleSubmit}>
+    <form className={styles.form} onSubmit={handleSubmit} aria-label="Add or edit task form">
       <input
+        ref={titleInputRef}
         type="text"
         placeholder="Task title"
         value={title}
         onChange={(e) => setTitle(e.target.value)}
         required
+        aria-required="true"
+        aria-label="Task title"
       />
       <textarea
         placeholder="Task description (optional)"
         value={description}
         onChange={(e) => setDescription(e.target.value)}
+        aria-label="Task description"
       />
-      <div>
+      <div className={styles.buttons}>
         <button type="submit">{initialTitle ? 'Save' : 'Add'}</button>
         {onCancel && (
-          <button type="button" onClick={onCancel} style={{ marginLeft: '8px' }}>
+          <button type="button" onClick={onCancel} className={styles.cancelButton}>
             Cancel
           </button>
         )}

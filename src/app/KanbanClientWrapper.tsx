@@ -4,6 +4,8 @@ import { Suspense, useEffect, useState } from 'react';
 import Board from './components/Board/Board';
 import { KanbanProvider } from './components/contexts/KanbanContext';
 import Header from './components/Header/Header';
+import styles from './page.module.scss';
+
 const Loading = () => <div>Loading Kanban...</div>;
 
 const KanbanApp = ({ children }: { children: React.ReactNode }) => {
@@ -25,9 +27,11 @@ export default function Page() {
     <Suspense fallback={<Loading />}>
       <KanbanApp>
         <KanbanProvider>
-          <Header />
-          <Board />
-          <div id="modal-root" />
+          <div className={styles.app}>
+            <Header />
+            <Board />
+            <div id="modal-root" />
+          </div>
         </KanbanProvider>{' '}
       </KanbanApp>
     </Suspense>
