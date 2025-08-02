@@ -8,6 +8,7 @@ import AddTaskForm from './AddTaskForm';
 import Modal from '../Modal/Modal';
 import CommentList from '../Comments/CommentList';
 import CommentInput from '../Comments/CommentInput';
+import { v4 as uuidv4 } from 'uuid';
 
 interface TaskCardProps {
   task: ITask;
@@ -46,7 +47,7 @@ const TaskCard = ({ task, columnId }: TaskCardProps) => {
   const handleAddComment = () => {
     if (!commentText.trim()) return;
     const newComment = {
-      id: Math.random().toString(),
+      id: uuidv4(),
       content: commentText.trim(),
     };
     addComment(columnId, task.id, newComment);

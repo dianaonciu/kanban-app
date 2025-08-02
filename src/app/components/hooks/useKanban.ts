@@ -36,10 +36,14 @@ export const useKanban = () => {
   const deleteComment = (columnId: string, taskId: string, commentId: string) =>
     dispatch({ type: 'DELETE_COMMENT', columnId, taskId, commentId });
 
-  const reorderTasks = (columnId: string, taskId: string, targetIndex: number) =>
-    dispatch({ type: 'REORDER_TASKS', columnId, taskId, targetIndex });
-
-  const initLocal = (payload: KanbanState) => dispatch({ type: '__INIT_LOCAL__', payload });
+  const addReply = (columnId: string, taskId: string, parentCommentId: string, reply: IComment) =>
+    dispatch({
+      type: 'ADD_REPLY',
+      columnId,
+      taskId,
+      parentCommentId,
+      reply,
+    });
 
   return {
     state,
@@ -53,7 +57,6 @@ export const useKanban = () => {
     addComment,
     editComment,
     deleteComment,
-    reorderTasks,
-    initLocal,
+    addReply,
   };
 };

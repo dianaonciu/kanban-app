@@ -1,6 +1,7 @@
 export interface IComment {
   id: string;
   content: string;
+  replies?: IComment[];
 }
 
 export interface ITask {
