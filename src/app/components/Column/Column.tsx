@@ -14,7 +14,7 @@ interface ColumnProps {
 }
 
 const Column = ({ column }: ColumnProps) => {
-  const { moveTask, renameColumn, deleteColumn, addTask } = useKanban();
+  const { moveTask, renameColumn, deleteColumn, addTask, reorderTasks } = useKanban();
 
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -36,12 +36,9 @@ const Column = ({ column }: ColumnProps) => {
     e.preventDefault();
     if (draggedIndex === null || draggedIndex === index) return;
 
-    const newTasks = [...tasks];
-    const [draggedTask] = newTasks.splice(draggedIndex, 1);
-    newTasks.splice(index, 0, draggedTask);
+    reorderTasks(column.id, draggedIndex, index);
 
     setDraggedIndex(index);
-    setTasks(newTasks);
   };
 
   const handleDrop = (e: React.DragEvent) => {

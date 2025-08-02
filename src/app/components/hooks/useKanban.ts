@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 import type { ITask, IComment } from '../types';
-import { KanbanContext, KanbanState } from '../contexts/KanbanContext';
+import { KanbanContext } from '../contexts/KanbanContext';
 
 export const useKanban = () => {
   const context = useContext(KanbanContext);
@@ -18,6 +18,9 @@ export const useKanban = () => {
 
   const moveTask = (taskId: string, fromColumnId: string, toColumnId: string) =>
     dispatch({ type: 'MOVE_TASK', taskId, fromColumnId, toColumnId });
+
+  const reorderTasks = (columnId: string, draggedIndex: number | null, index: number) =>
+    dispatch({ type: 'REORDER_TASKS', columnId, draggedIndex, index });
 
   const addTask = (columnId: string, task: ITask) => dispatch({ type: 'ADD_TASK', columnId, task });
 
@@ -58,5 +61,6 @@ export const useKanban = () => {
     editComment,
     deleteComment,
     addReply,
+    reorderTasks,
   };
 };

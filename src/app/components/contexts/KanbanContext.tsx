@@ -37,7 +37,8 @@ export type KanbanAction =
       taskId: string;
       parentCommentId: string;
       reply: IComment;
-    };
+    }
+  | { type: 'REORDER_TASKS'; columnId: string; draggedIndex: number | null; index: number };
 
 const defaultTasks: ITask[] = [
   { id: uuidv4(), title: 'Header', description: '', comments: [] },
@@ -90,6 +91,12 @@ const reducer = (state: KanbanState, action: KanbanAction): KanbanState => {
 
       if (fromColumnId === toColumnId) return state;
 
+      const taskToMove = state.columns
+        .find((col) => col.id === fromColumnId)
+        ?.tasks.find((task) => task.id === taskId);
+
+      if (!taskToMove) return state;
+
       const updatedColumns = state.columns.map((col) => {
         if (col.id === fromColumnId) {
           return {
@@ -99,12 +106,6 @@ const reducer = (state: KanbanState, action: KanbanAction): KanbanState => {
         }
 
         if (col.id === toColumnId) {
-          const taskToMove = state.columns
-            .find((c) => c.id === fromColumnId)
-            ?.tasks.find((t) => t.id === taskId);
-
-          if (!taskToMove) return col;
-
           return {
             ...col,
             tasks: [...col.tasks, taskToMove],
@@ -115,6 +116,23 @@ const reducer = (state: KanbanState, action: KanbanAction): KanbanState => {
       });
 
       return { ...state, columns: updatedColumns };
+    }
+
+    case 'REORDER_TASKS': {
+      const { columnId, draggedIndex, index } = action;
+
+      return {
+        ...state,
+        columns: state.columns.map((col) => {
+          if (col.id !== columnId) return col;
+
+          const newTasks = [...col.tasks];
+          const [moved] = newTasks.splice(draggedIndex!, 1);
+          newTasks.splice(index, 0, moved);
+
+          return { ...col, tasks: newTasks };
+        }),
+      };
     }
 
     case 'ADD_TASK': {
@@ -216,12 +234,12 @@ const reducer = (state: KanbanState, action: KanbanAction): KanbanState => {
     case 'DELETE_COMMENT': {
       const { columnId, taskId, commentId } = action;
 
-      const deleteCommentRecursively = (comments: IComment[], targetId: string): IComment[] => {
+      const deleteCommentRecursively = (comments: IComment[]): IComment[] => {
         return comments
-          .filter((comment) => comment.id !== targetId)
+          .filter((comment) => comment.id !== commentId)
           .map((comment) => ({
             ...comment,
-            replies: deleteCommentRecursively(comment.replies || [], targetId),
+            replies: deleteCommentRecursively(comment.replies || []),
           }));
       };
 
@@ -235,7 +253,7 @@ const reducer = (state: KanbanState, action: KanbanAction): KanbanState => {
               if (task.id !== taskId) return task;
               return {
                 ...task,
-                comments: deleteCommentRecursively(task.comments || [], commentId),
+                comments: deleteCommentRecursively(task.comments || []),
               };
             }),
           };
