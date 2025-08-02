@@ -10,6 +10,7 @@ import React, {
   useState,
 } from 'react';
 import { IColumn, IComment, ITask } from '../types';
+import { v4 as uuidv4 } from 'uuid';
 
 export type KanbanState = {
   columns: IColumn[];
@@ -29,20 +30,26 @@ export type KanbanAction =
   | { type: 'ADD_COMMENT'; columnId: string; taskId: string; comment: IComment }
   | { type: 'EDIT_COMMENT'; columnId: string; taskId: string; commentId: string; content: string }
   | { type: 'DELETE_COMMENT'; columnId: string; taskId: string; commentId: string }
-  | { type: 'REORDER_TASKS'; columnId: string; taskId: string; targetIndex: number }
-  | { type: '__INIT_LOCAL__'; payload: KanbanState };
+  | { type: '__INIT_LOCAL__'; payload: KanbanState }
+  | {
+      type: 'ADD_REPLY';
+      columnId: string;
+      taskId: string;
+      parentCommentId: string;
+      reply: IComment;
+    };
 
 const defaultTasks: ITask[] = [
-  { id: 'header', title: 'Header', description: '', comments: [] },
-  { id: 'button', title: 'Button', description: '', comments: [] },
-  { id: 'integration', title: 'Integration', description: 'use axios', comments: [] },
+  { id: uuidv4(), title: 'Header', description: '', comments: [] },
+  { id: uuidv4(), title: 'Button', description: '', comments: [] },
+  { id: uuidv4(), title: 'Integration', description: 'use axios', comments: [] },
 ];
 
 const initialState: KanbanState = {
   columns: [
-    { id: 'todo', title: 'To Do', tasks: defaultTasks },
-    { id: 'inprogress', title: 'In Progress', tasks: [] },
-    { id: 'done', title: 'Done', tasks: [] },
+    { id: uuidv4(), title: 'To Do', tasks: defaultTasks },
+    { id: uuidv4(), title: 'In Progress', tasks: [] },
+    { id: uuidv4(), title: 'Done', tasks: [] },
   ],
 };
 
@@ -61,7 +68,7 @@ const reducer = (state: KanbanState, action: KanbanAction): KanbanState => {
     case 'ADD_COLUMN':
       return {
         ...state,
-        columns: [...state.columns, { id: Date.now().toString(), title: 'New Column', tasks: [] }],
+        columns: [...state.columns, { id: uuidv4(), title: 'New Column', tasks: [] }],
       };
 
     case 'RENAME_COLUMN':
@@ -173,6 +180,21 @@ const reducer = (state: KanbanState, action: KanbanAction): KanbanState => {
     case 'EDIT_COMMENT': {
       const { columnId, taskId, commentId, content } = action;
 
+      const updateComment = (comments: IComment[]): IComment[] => {
+        return comments.map((comment) => {
+          if (comment.id === commentId) {
+            return { ...comment, content };
+          }
+          if (comment.replies && comment.replies.length > 0) {
+            return {
+              ...comment,
+              replies: updateComment(comment.replies),
+            };
+          }
+          return comment;
+        });
+      };
+
       return {
         ...state,
         columns: state.columns.map((col) => {
@@ -183,9 +205,7 @@ const reducer = (state: KanbanState, action: KanbanAction): KanbanState => {
               if (task.id !== taskId) return task;
               return {
                 ...task,
-                comments: (task.comments ?? []).map((comment) =>
-                  comment.id === commentId ? { ...comment, content } : comment,
-                ),
+                comments: updateComment(task.comments ?? []),
               };
             }),
           };
@@ -195,6 +215,16 @@ const reducer = (state: KanbanState, action: KanbanAction): KanbanState => {
 
     case 'DELETE_COMMENT': {
       const { columnId, taskId, commentId } = action;
+
+      const deleteCommentRecursively = (comments: IComment[], targetId: string): IComment[] => {
+        return comments
+          .filter((comment) => comment.id !== targetId)
+          .map((comment) => ({
+            ...comment,
+            replies: deleteCommentRecursively(comment.replies || [], targetId),
+          }));
+      };
+
       return {
         ...state,
         columns: state.columns.map((col) => {
@@ -205,7 +235,7 @@ const reducer = (state: KanbanState, action: KanbanAction): KanbanState => {
               if (task.id !== taskId) return task;
               return {
                 ...task,
-                comments: task.comments?.filter((comment) => comment.id !== commentId),
+                comments: deleteCommentRecursively(task.comments || [], commentId),
               };
             }),
           };
@@ -213,23 +243,42 @@ const reducer = (state: KanbanState, action: KanbanAction): KanbanState => {
       };
     }
 
-    case 'REORDER_TASKS': {
-      const { columnId, taskId, targetIndex } = action;
-      const column = state.columns.find((col) => col.id === columnId);
-      if (!column) return state;
+    case 'ADD_REPLY': {
+      const { columnId, taskId, parentCommentId, reply } = action;
 
-      const task = column.tasks.find((t) => t.id === taskId);
-      if (!task) return state;
-      console.log(targetIndex);
-      console.log(task);
-      console.log(column);
-      const filtered = column.tasks.filter((t) => t.id !== taskId);
-      filtered.splice(targetIndex, 0, task);
+      const addReplyRecursive = (comments: IComment[]): IComment[] =>
+        comments.map((comment) => {
+          if (comment.id === parentCommentId) {
+            return {
+              ...comment,
+              replies: [...(comment.replies || []), reply],
+            };
+          }
 
-      const updatedColumn = { ...column, tasks: filtered };
-      const newColumns = state.columns.map((c) => (c.id === columnId ? updatedColumn : c));
+          return {
+            ...comment,
+            replies: comment.replies ? addReplyRecursive(comment.replies) : [],
+          };
+        });
 
-      return { ...state, columns: newColumns };
+      return {
+        ...state,
+        columns: state.columns.map((column) =>
+          column.id !== columnId
+            ? column
+            : {
+                ...column,
+                tasks: column.tasks.map((task) =>
+                  task.id !== taskId
+                    ? task
+                    : {
+                        ...task,
+                        comments: addReplyRecursive(task.comments || []),
+                      },
+                ),
+              },
+        ),
+      };
     }
 
     default:

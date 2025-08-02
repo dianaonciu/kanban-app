@@ -71,22 +71,7 @@
   padding: 0 0.3rem;
   line-height: 1;
   user-select: none;
-
-  &.editButton {
-    color: #66aaff;
-
-    &:hover {
-      color: #99cfff;
-    }
-  }
-
-  &.deleteButton {
-    color: #ff6666;
-
-    &:hover {
-      color: #ff9999;
-    }
-  }
+  color: white;
 }
 
 .commentsSection {

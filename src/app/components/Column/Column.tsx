@@ -7,6 +7,7 @@ import { IColumn } from '../types';
 import { useKanban } from '../hooks/useKanban';
 import AddTaskForm from '../TaskCard/AddTaskForm';
 import Modal from '../Modal/Modal';
+import { v4 as uuidv4 } from 'uuid';
 
 interface ColumnProps {
   column: IColumn;
@@ -69,7 +70,7 @@ const Column = ({ column }: ColumnProps) => {
 
   const onAddTask = (title: string, description: string) => {
     addTask(column.id, {
-      id: String(Date.now()),
+      id: uuidv4(),
       title,
       description,
     });
