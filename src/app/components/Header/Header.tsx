@@ -14,7 +14,12 @@ const Header = () => {
   return (
     <header className={styles.header}>
       <h1 className={styles.title}>Kanban Board</h1>
-      <button className={styles.addButton} onClick={handleAddColumn} title="Add Column">
+      <button
+        className={styles.addButton}
+        onClick={handleAddColumn}
+        title="Add Column"
+        aria-label="Add new column"
+      >
         + Add column
       </button>
     </header>

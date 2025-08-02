@@ -32,8 +32,14 @@
     font-family: inherit;
   }
 
+  .buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 4px;
+  }
+
   button {
-    align-self: flex-end;
     background-color: #121212;
     border: 1.5px solid white;
     color: white;
@@ -50,6 +56,24 @@
 
     &:active {
       background-color: rgb(81, 81, 81);
+    }
+  }
+
+  .cancelButton {
+    background-color: transparent;
+    border: none;
+    color: #ccc;
+    padding: 8px 18px;
+    font-weight: 600;
+    font-size: 1rem;
+
+    &:hover {
+      color: white;
+      cursor: pointer;
+    }
+
+    &:active {
+      color: #aaa;
     }
   }
 }

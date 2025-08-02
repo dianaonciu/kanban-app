@@ -36,8 +36,11 @@ const TaskCard = ({ task, columnId }: TaskCardProps) => {
   };
 
   const handleDelete = () => {
-    deleteTask(columnId, task.id);
-    setIsModalOpen(false);
+    const confirmed = window.confirm('Are you sure you want to delete this card?');
+    if (confirmed) {
+      deleteTask(columnId, task.id);
+      setIsModalOpen(false);
+    }
   };
 
   const handleAddComment = () => {
@@ -63,6 +66,10 @@ const TaskCard = ({ task, columnId }: TaskCardProps) => {
         draggable
         onDragStart={handleDragStart}
         onClick={() => setIsModalOpen(true)}
+        role="button"
+        tabIndex={0}
+        onKeyDown={(e) => e.key === 'Enter' && setIsModalOpen(true)}
+        aria-label={`Open details for task: ${task.title}`}
       >
         <div className={styles.header}>
           <div className={styles.titleWrapper}>
@@ -115,8 +122,9 @@ const TaskCard = ({ task, columnId }: TaskCardProps) => {
           ) : (
             <>
               <h2>{task.title}</h2>
-              <p>{task.description || 'No description'}</p>
-
+              <div className={`${styles.description} ${!task.description ? styles.empty : ''}`}>
+                {task.description || 'No description'}
+              </div>
               <section className={styles.commentsSection}>
                 <h3>Comments</h3>
 
